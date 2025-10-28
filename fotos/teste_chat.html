@@ -103,7 +103,6 @@
 <body>
     <div class="card">
         <div class="header">
-            <h1>{nome_item}</h1>
             <div class="id-tag">ID: {id_patrimonio}</div>
         </div>
         <div class="content">
@@ -113,8 +112,14 @@
 
             <div class="info-group">
                 <div class="info-item full-width-item">
-                    <strong>Localização Atual</strong>
-                    <span>{localizacao}</span>
+                    <strong>Descrição</strong>
+                    <span>{descricao}</span>
+                </div>
+                
+            <div class="info-group">
+                <div class="info-item full-width-item">
+                    <strong>Centro de Custo</strong>
+                    <span>{centro_de_custo}</span>
                 </div>
 
                 <div class="info-item">
@@ -123,20 +128,14 @@
                 </div>
 
                 <div class="info-item">
-                    <strong>Valor de Aquisição</strong>
-                    <span>{valor_aquisicao}</span>
+                    <strong>Valor Estimado</strong>
+                    <span>{valor_estimado}</span>
                 </div>
 
                 <div class="info-item">
-                    <strong>Depreciação Anual</strong>
-                    <span>{depreciacao_anual}</span>
+                    <strong>Grupo</strong>
+                    <span>{grupo_equipamento}</span>
                 </div>
-
-                <div class="info-item">
-                    <strong>Estado de Conservação</strong>
-                    <span>{estado_conservacao}</span>
-                </div>
-            </div>
 
             <!-- LOGOS NO FINAL -->
             <div class="logos">
@@ -148,6 +147,7 @@
     </div>
 </body>
 </html>
+
 
 
 
