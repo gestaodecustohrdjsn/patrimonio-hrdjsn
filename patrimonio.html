@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Patrimônio</title>
 
   <style>
@@ -33,16 +32,6 @@
       color: white;
       padding: 15px 20px;
       text-align: center;
-    }
-
-    .id-tag {
-      display: inline-block;
-      background-color: #f2ae2e;
-      color: #333;
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 1.4em;
     }
 
     .content {
@@ -86,23 +75,34 @@
     .info-item strong {
       display: block;
       color: #A32B50;
-      font-size: 1.1em;
-      margin-bottom: 4px;
+      font-size: 1.2em;
+      margin-bottom: 2px;
     }
 
     .info-item span {
-      color: #000;
-      font-size: 1.05em;
+      color: #000000;
+      font-size: 1.1em;
       font-weight: 600;
     }
 
-    .full-width {
+    .full-width-item {
       flex: 1 1 100%;
+    }
+
+    .id-tag {
+      display: inline-block;
+      background-color: #f2ae2e;
+      color: #333;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 1.4em;
     }
 
     .logos {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 30px;
       margin-top: 20px;
       padding-top: 10px;
@@ -118,29 +118,32 @@
 
 <body>
   <div class="card">
+
     <div class="header">
-      <div class="id-tag" id="idPatrimonio">ID</div>
+      <div class="id-tag" id="id-tag">ID</div>
     </div>
 
     <div class="content">
+
       <div class="image-container">
-        <img class="item-image" id="fotoPatrimonio" alt="Foto do patrimônio" />
+        <img class="item-image" id="foto" alt="Foto do Patrimônio">
       </div>
 
       <div class="info-group">
-        <div class="info-item full-width">
+
+        <div class="info-item full-width-item">
           <strong>Descrição</strong>
           <span id="descricao"></span>
         </div>
 
         <div class="info-item">
           <strong>Centro de Custo</strong>
-          <span id="centroCusto"></span>
+          <span id="centro"></span>
         </div>
 
         <div class="info-item">
           <strong>Data de Aquisição</strong>
-          <span id="dataAquisicao"></span>
+          <span id="data"></span>
         </div>
 
         <div class="info-item">
@@ -150,76 +153,63 @@
 
         <div class="info-item">
           <strong>Grupo</strong>
-          <span id="categoria"></span>
+          <span id="grupo"></span>
         </div>
+
       </div>
 
       <div class="logos">
-        <img src="../layout/logo_hospital.png?raw=true" />
-        <img src="../layout/logo_mais_saude_completo2.png?raw=true" />
+        <img src="layout/logo_hospital.png?raw=true" alt="Logo Hospital">
+        <img src="layout/logo_mais_saude_completo2.png?raw=true" alt="Logo Instituto Mais Saúde">
       </div>
+
     </div>
   </div>
 
-  <script>
-    const API_URL =
-      "https://script.google.com/macros/s/AKfycbzp2-HARJhpxphmN-RUI8pqv-ClEWpWn_QUizDwkmAjR_fkmW8cCm0osRoPfRaVYGviYg/exec";
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbzp2-HARJhpxphmN-RUI8pqv-ClEWpWn_QUizDwkmAjR_fkmW8cCm0osRoPfRaVYGviYg/exec";
 
-    const params = new URLSearchParams(window.location.search);
-    const rowKey = params.get("id");
+  function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
 
-    if (!rowKey) {
-      alert("RowKey não informado na URL");
-    } else {
-      fetch(`${API_URL}?id=${rowKey}`)
-        .then(r => r.json())
-        .then(d => preencher(d))
-        .catch(e => {
-          console.error(e);
-          alert("Erro ao carregar patrimônio");
-        });
+  // USAREMOS rowkey COMO ID
+  const rowKey = getParam("id");
+
+  if (!rowKey) {
+    alert("RowKey não informado na URL. Use ?id=XXXXX");
+  } else {
+    fetch(`${API_URL}?id=${rowKey}`)
+      .then(r => r.json())
+      .then(d => preencher(d))
+      .catch(() => alert("Erro ao carregar patrimônio"));
+  }
+
+  function preencher(d) {
+    document.title = `${d.Descricao} - ${d['ID Patrimonio']}`;
+
+    document.getElementById("id-tag").innerText = `ID: ${d['ID Patrimonio']}`;
+    document.getElementById("descricao").innerText = d.Descricao || "";
+    document.getElementById("centro").innerText = d['Centro de Custo'] || "";
+    document.getElementById("data").innerText = formatarData(d['Data de Aquisição']);
+    document.getElementById("valor").innerText = formatarMoeda(d.Valor);
+    document.getElementById("grupo").innerText = d.Categoria || "";
+
+    if (d.Foto) {
+      const nomeFoto = d.Foto.split("/").pop();
+      document.getElementById("foto").src = `fotos/${nomeFoto}?raw=true`;
     }
+  }
 
-    function preencher(d) {
-      document.title = `${d.Descricao} - ${d["ID Patrimonio"]}`;
+  function formatarMoeda(v) {
+    if (v === null || v === undefined || v === "") return "";
+    return Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
 
-      document.getElementById("idPatrimonio").innerText =
-        `ID: ${d["ID Patrimonio"]}`;
-
-      document.getElementById("descricao").innerText = d.Descricao || "";
-      document.getElementById("centroCusto").innerText = d["Centro de Custo"] || "";
-      document.getElementById("categoria").innerText = d.Categoria || "";
-
-      document.getElementById("valor").innerText =
-        formatarMoeda(d.Valor);
-
-      document.getElementById("dataAquisicao").innerText =
-        formatarData(d["Data de Aquisição"]);
-
-      if (d.Foto) {
-        const nomeFoto = extrairNomeFoto(d.Foto);
-        document.getElementById("fotoPatrimonio").src =
-          `../fotos/${nomeFoto}?raw=true`;
-      }
-    }
-
-    function extrairNomeFoto(path) {
-      // Ex: Fotos/4ec50290.Foto.141150.jpg
-      return path.split("/")[1];
-    }
-
-    function formatarMoeda(v) {
-      if (!v) return "";
-      return Number(v).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-      });
-    }
-
-    function formatarData(d) {
-      if (!d) return "";
-      return new Date(d).toLocaleDateString("pt-BR");
-    }
-  </script>
+  function formatarData(d) {
+    if (!d) return "";
+    return new Date(d).toLocaleDateString("pt-BR");
+  }
+</script>
 </body>
 </html>
